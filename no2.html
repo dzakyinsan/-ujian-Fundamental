@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        tr,td,table{
+            border:1px solid;
+            border-collapse: collapse;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <h1>Madding</h1>
+    <div>
+        Username: <input type="text" id="username" /> <br><br>
+        Password: <input type="password" id="password"/> <br><br>
+        <button onclick="login()">Login</button>
+    </div>
+        <h1></h1>
+        <h2 style='color:green;'></h2>
+        <h2 style="color: black;"></h2>
+        <h1></h1>
+        <table>
+
+        </table>
+        <h3></h3>
+        <h3></h3>
+        <table>
+
+        </table>
+        <h4 id='countdown'></h4>
+        <p></p>
+        <p></p>
+    </center>
+</body>
+<script>
+class User{
+    constructor(a,b,c){
+        this.username=a,
+        this.password=b,
+        this.role=c
+    }
+}
+var datausers=[
+    new User('dzaky','123','user'),
+    new User('admin','123','admin'),
+]
+var datauserlogin={}
+
+class KegiatanMading{
+    constructor(a,b,c){
+        this.kegiatan=a,
+        this.hari=b,
+        this.poster=c
+    }
+}
+var listdata=[
+    new KegiatanMading('Lari','Senin',''),
+    new KegiatanMading('estafet','Selasa',''),
+]
+var listcart=[
+
+]
+const login=()=>{
+    var username=document.getElementById('username').value
+    var pass=document.getElementById('password').value
+ 
+    var arrbaru=datausers.filter((val)=>val.username==username&&val.password==pass)
+    datauserlogin=arrbaru[0]
+    console.log(datauserlogin)
+    if(datauserlogin){
+        document.getElementsByTagName('h1')[1].innerHTML=`hai ${datauserlogin.username}`
+        if(datauserlogin.role=='admin'){
+            document.getElementsByTagName('h1')[0].innerHTML=''
+            document.getElementsByTagName('h1')[2].innerHTML='Selamat Datang :)'
+            document.getElementsByTagName('div')[0].innerHTML=''
+            document.getElementsByTagName('h2')[0].innerHTML=''
+            document.getElementsByTagName('h2')[1].innerHTML=''
+            printdataAdmin(listdata)
+
+
+        }else{
+            document.getElementsByTagName('h1')[0].innerHTML=''
+            document.getElementsByTagName('h1')[2].innerHTML=''
+            document.getElementsByTagName('div')[0].innerHTML=''
+            document.getElementsByTagName('h2')[0].innerHTML=''
+            document.getElementsByTagName('h2')[1].innerHTML=''
+            printdataProduk(listdata)
+        }
+        document.getElementsByTagName('p')[1].innerHTML=`<button onclick="logoutuser()"> logout</button>`
+    }else{
+        document.getElementsByTagName('h2')[1].innerHTML='user tidak ditemukan atau password salah'
+        document.getElementsByTagName('h1')[2].innerHTML=''
+        document.getElementsByTagName('p')[1].innerHTML=``
+    }
+}
+const logoutuser=()=>{
+    var konfirmLogout=confirm('benar mau logout?')
+    if(konfirmLogout){
+        datauserlogin={}
+        document.getElementsByTagName('h1')[0].innerHTML='Madding'
+        document.getElementsByTagName('div')[0].innerHTML=`Username: <input type="text" id="username" /> <br><br>
+                                                            Password: <input type="password" id="password"/> <br><br>
+                                                            <button onclick="login()">Login</button>`
+        document.getElementsByTagName('h1')[1].innerHTML=''
+        document.getElementsByTagName('h1')[2].innerHTML=''
+        document.getElementsByTagName('p')[1].innerHTML=``
+        document.getElementsByTagName('h2')[1].innerHTML=''
+        document.getElementsByTagName('table')[0].innerHTML=''
+        document.getElementsByTagName('h3')[0].innerHTML=''
+        document.getElementsByTagName('h3')[1].innerHTML=``
+        document.getElementsByTagName('table')[1].innerHTML=''
+        
+    }
+}
+
+//========================================= script user ===================================
+
+const printdataProduk=(a)=>{
+    var htable=`<tr bgcolor='green'>
+                    <td>No</td>
+                    <td>Kegiatan</td>
+                    <td>Hari</td>
+                    <td>Poster</td>
+                    <td>Action</td>
+                </tr> `
+    var isitable=''
+    a.forEach((val,index) => {
+        isitable+=`<tr>
+                    <td>${index+1}</td>
+                    <td>${val.kegiatan}</td>
+                    <td>${val.hari}</td>
+                    <td><img src=${val.poster} height='100px'/></td>
+                    <td></td>
+                </tr>`
+
+    });
+    document.getElementsByTagName('table')[0].innerHTML=htable+isitable
+    }
+//======================================== script admin =================================
+
+var indexedit=-1
+var indexdel=-1
+const printdataAdmin=(a)=>{
+    var htable=`<tr bgcolor='yellow '>
+                    <td>No</td>
+                    <td>kegiatan</td>
+                    <td>Hari</td>
+                    <td>Poster</td>
+                    <td>Action</td>
+                </tr> `
+    var isitable=''
+    a.forEach((val,index) => {
+        if(index==indexedit){
+            isitable+=`<tr>
+                        <td>${index+1}</td>
+                        <td><input type='text' id='editproduk${index}'></td>
+                        <td>
+                            <select id="edithari${index}">
+                                    <option> Senin</option>
+                                    <option> Selasa</option>
+                                    <option> Rabu</option>
+                                    <option> Kamis</option>
+                                    <option> Jumat</option>
+                             </select>    
+                        </td>
+                        <td><input type='text' id='editposter${index}'></td>
+                        <td><button onclick="cancel()">cancel</button><button onclick="save(${index})">save</button></td>
+                       </tr> `
+
+        }else  if(index==indexdel){ 
+            isitable+=`<tr>
+                    <td>${index+1}</td>
+                    <td>${val.kegiatan}</td>
+                    <td>${val.hari}</td>
+                    <td><img src=${val.poster} height='100px'/></td>
+                    <td><button onclick='cancelDel()'>No</button><button onclick="confirmDel(${index})">Yes</button></td>
+                </tr>`
+        }else{
+        isitable+=`<tr>
+                    <td>${index+1}</td>
+                    <td>${val.kegiatan}</td>
+                    <td>${val.hari}</td>
+                    <td><img src=${val.poster} height='100px'/></td>
+                    <td><button onclick='hapus(${index})'>Delete</button>  <button onclick="edit(${index})">edit</button></td>
+                </tr>`
+
+        }
+    });
+    document.getElementsByTagName('table')[0].innerHTML=htable+isitable
+    document.getElementsByTagName('p')[1].innerHTML=`<button onclick="logoutuser()"> logout</button>`
+}
+const hapus=(a)=>{
+    indexdel=a
+    printdataAdmin(listdata)
+}
+const cancelDel=()=>{
+    indexdel=-1
+    printdataAdmin(listdata)
+}
+const confirmDel=(a)=>{
+    listdata.splice(a,1)
+    indexdel=-1
+    printdataAdmin(listdata)
+}
+const edit=(a)=>{
+    indexedit=a
+    printdataAdmin(listdata)
+}
+const cancel=()=>{
+    indexedit=-1
+    printdataAdmin(listdata)
+}
+const save=(a)=>{
+    var newkegiatan=document.getElementById(`editproduk${a}`).value
+    var newhari=document.getElementById(`edithari${a}`).value
+    var newposter=document.getElementById(`editposter${a}`).value
+    if(newkegiatan){
+        listdata[a].kegiatan=newkegiatan
+    }
+    if(newhari){
+        listdata[a].hari=newhari
+    }
+    if(newposter){
+        listdata[a].poster=newposter
+    }
+    indexedit=-1
+    printdataAdmin(listdata)
+}
+const onAddlistcart=()=>{
+    var input=document.getElementsByClassName('addlistcart')
+    var produkbaru=input[0].value
+    var hargabaru=parseInt(input[1].value)
+    var gambarbaru=input[2].value
+    listdata.push(new KegiatanMading(produkbaru,hargabaru,gambarbaru))
+    printdataAdmin(listdata)
+}
+</script>
+</html>
